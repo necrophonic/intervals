@@ -11,6 +11,7 @@ import (
 	"github.com/faiface/beep/mp3"
 	"github.com/faiface/beep/speaker"
 	"github.com/go-yaml/yaml"
+	"github.com/schollz/progressbar"
 	flag "github.com/spf13/pflag"
 )
 
@@ -86,9 +87,18 @@ func main() {
 
 	for set := 1; set <= sets; set++ {
 		fmt.Printf("Begin set %d\n", set)
+		
 		for _, interval := range intervals {
-			fmt.Printf("\tStarting interval: %v ... ", interval)
-			time.Sleep(interval)
+			fmt.Printf("\tStarting interval: %v", interval)
+
+			ticks := int(interval.Seconds())
+
+			bar := progressbar.New(ticks)
+			for s := 0 ; s < ticks ; s++ {
+				time.Sleep(1 * time.Second)
+				bar.Add(1)
+			}
+			// time.Sleep(interval)
 			fmt.Println("BEEP!")
 			soundBeep(&wg, streamer)
 		}
